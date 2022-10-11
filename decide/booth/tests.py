@@ -6,7 +6,7 @@
     def test_check_addition(self):
         self.assertEqual(1+1,2)
 '''
-from django.test import TestCase
+'''from django.test import TestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
 from selenium import webdriver
@@ -35,4 +35,4 @@ class AdminTestCase(StaticLiveServerTestCase):
         super().tearDown()
         self.driver.quit()
 
-        self.base.tearDown()
+        self.base.tearDown()'''
