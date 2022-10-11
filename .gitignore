@@ -101,3 +101,8 @@ ENV/
 .mypy_cache/
 
 .vagrant
+
+#python env
+egc/
+env38/
+get-pip.py
