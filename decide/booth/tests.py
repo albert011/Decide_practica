@@ -1,12 +1,11 @@
-#from django.test import TestCase
+from django.test import TestCase
 
 # Create your tests here.
 
-'''class SimpleTest(TestCase):
+class SimpleTest(TestCase):
     def test_check_addition(self):
         self.assertEqual(1+1,2)
-'''
-'''from django.test import TestCase
+
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
 from selenium import webdriver
@@ -16,6 +15,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 
 from base.tests import BaseTestCase
+from voting.models import Question, Voting
 
 class AdminTestCase(StaticLiveServerTestCase):
 
@@ -26,7 +26,7 @@ class AdminTestCase(StaticLiveServerTestCase):
         self.base.setUp()
 
         options = webdriver.ChromeOptions()
-        options.headless = False
+        options.headless = True
         self.driver = webdriver.Chrome(options=options)
 
         super().setUp()            
@@ -35,4 +35,22 @@ class AdminTestCase(StaticLiveServerTestCase):
         super().tearDown()
         self.driver.quit()
 
-        self.base.tearDown()'''
+        self.base.tearDown()
+
+    def test_simpleCorrectLogin(self):                    
+        self.driver.get(f'{self.live_server_url}/admin/')
+        self.driver.find_element(By.ID,'id_username').send_keys("admin")
+        self.driver.find_element(By.ID,'id_password').send_keys("qwerty",Keys.ENTER)
+        
+        print(self.driver.current_url)
+        #In case of a correct loging, a element with id 'user-tools' is shown in the upper right part
+        self.assertTrue(len(self.driver.find_elements(By.ID,'user-tools'))==1)
+
+    def test_simpleVisualizer(self):        
+        q = Question(desc='test question')
+        q.save()
+        v = Voting(name='test voting', question=q)
+        v.save()
+        response =self.driver.get(f'{self.live_server_url}/visualizer/{v.pk}/')
+        vState= self.driver.find_element(By.TAG_NAME,"h2").text
+        self.assertTrue(vState, "Votación no comenzada")
